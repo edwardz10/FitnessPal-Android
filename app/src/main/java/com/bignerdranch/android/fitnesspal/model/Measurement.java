@@ -11,9 +11,13 @@ public class Measurement {
     private Long id;
     private String name;
 
-    public static ContentValues getContentValues(final String name) {
+    public Measurement(final String name) {
+        this.name = name;
+    }
+
+    public static ContentValues getContentValues(final Measurement measurement) {
         ContentValues values = new ContentValues();
-        values.put("name", name);
+        values.put("name", measurement.name);
         return values;
     }
 }

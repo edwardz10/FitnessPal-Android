@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.bignerdranch.android.fitnesspal.model.ExerciseType;
+import com.bignerdranch.android.fitnesspal.model.Exercise;
 import com.bignerdranch.android.fitnesspal.model.Measurement;
 
 import java.util.LinkedList;
@@ -14,11 +14,14 @@ import java.util.List;
 import static com.bignerdranch.android.fitnesspal.db.DbConstants.DATABASE_NAME;
 import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_EXERCISES_TABLE;
 import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_EXERCISE_SETS_TABLE;
-import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_EXERCISE_TYPES_TABLE;
 import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_MEASUREMENTS_TABLE;
 import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_TRAINING_SESSIONS_TABLE;
 import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_TRAINING_SESSION_TYPES_TABLE;
 import static com.bignerdranch.android.fitnesspal.db.DdlRollbackConstants.DROP_MEASUREMENTS_TABLE;
+import static com.bignerdranch.android.fitnesspal.db.DmlConstants.*;
+import static com.bignerdranch.android.fitnesspal.db.DmlConstants.KILOGRAMS;
+import static com.bignerdranch.android.fitnesspal.db.DmlConstants.METERS;
+import static com.bignerdranch.android.fitnesspal.db.DmlConstants.SECONDS;
 
 public class FitnessPalDBHelper extends SQLiteOpenHelper {
 
@@ -46,7 +49,7 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
     public List<Measurement> getMeasurements() {
         final List<Measurement> measurements = new LinkedList<>();
 
-        final Cursor cursor = getReadableDatabase().rawQuery("select * from measurements", null);
+        final Cursor cursor = getDatabase().rawQuery("select * from measurements", null);
         cursor.moveToFirst();
 
         while(cursor.isAfterLast() == false){
@@ -57,27 +60,40 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         return measurements;
     }
 
-    public List<ExerciseType> getExerciseTypes() {
-        final List<ExerciseType> exerciseTypes = new LinkedList<>();
+    public Measurement getMeasurementByName(final String name) {
+        final String query = "select * from measurements where name = '" + name + "';";
+        final Cursor cursor = getDatabase().rawQuery(query, null);
 
-        final Cursor cursor = getReadableDatabase().rawQuery("select * from exercise_types", null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            return new Measurement(cursor.getLong(0), cursor.getString(1));
+        }
+
+        return null;
+    }
+
+    public List<Exercise> getExercises() {
+        final List<Exercise> exercises = new LinkedList<>();
+
+        final Cursor cursor = getDatabase().rawQuery("select * from exercises", null);
         cursor.moveToFirst();
 
         while(cursor.isAfterLast() == false){
-            exerciseTypes.add(new ExerciseType(cursor.getLong(0), cursor.getString(1)));
+            exercises.add(new Exercise(cursor.getLong(0),
+                                       cursor.getString(1),
+                                       cursor.getLong(2)));
             cursor.moveToNext();
         }
 
-        return exerciseTypes;
+        return exercises;
     }
 
     private void ddl() {
-        database.execSQL(CREATE_EXERCISE_TYPES_TABLE);
-        database.execSQL(CREATE_MEASUREMENTS_TABLE);
-        database.execSQL(CREATE_EXERCISES_TABLE);
-        database.execSQL(CREATE_TRAINING_SESSION_TYPES_TABLE);
-        database.execSQL(CREATE_EXERCISE_SETS_TABLE);
-        database.execSQL(CREATE_TRAINING_SESSIONS_TABLE);
+        getDatabase().execSQL(CREATE_MEASUREMENTS_TABLE);
+        getDatabase().execSQL(CREATE_EXERCISES_TABLE);
+        getDatabase().execSQL(CREATE_TRAINING_SESSION_TYPES_TABLE);
+        getDatabase().execSQL(CREATE_EXERCISE_SETS_TABLE);
+        getDatabase().execSQL(CREATE_TRAINING_SESSIONS_TABLE);
     }
 
     private void ddlRollback(SQLiteDatabase db) {
@@ -86,22 +102,79 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
 
     private void dml() {
         createMeasurements();
-        createExerciseTypes();
+        createExercises();
     }
 
     private void createMeasurements() {
-        database.insert("measurements", null, Measurement.getContentValues("kg1"));
-        database.insert("measurements", null, Measurement.getContentValues("meter2"));
-        database.insert("measurements", null, Measurement.getContentValues("sec3"));
+        getDatabase().insert("measurements", null, Measurement.getContentValues(new Measurement(KILOGRAMS)));
+        getDatabase().insert("measurements", null, Measurement.getContentValues(new Measurement(METERS)));
+        getDatabase().insert("measurements", null, Measurement.getContentValues(new Measurement(SECONDS)));
     }
 
-    private void createExerciseTypes() {
-        database.insert("exercise_types", null, ExerciseType.getContentValues("arms"));
-        database.insert("exercise_types", null, ExerciseType.getContentValues("legs"));
-        database.insert("exercise_types", null, ExerciseType.getContentValues("chest"));
-        database.insert("exercise_types", null, ExerciseType.getContentValues("shoulders"));
-        database.insert("exercise_types", null, ExerciseType.getContentValues("back"));
-        database.insert("exercise_types", null, ExerciseType.getContentValues("endurance"));
+    private void createExercises() {
+        final Measurement measurementInKg = getMeasurementByName(KILOGRAMS);
+        final Measurement measurementInMeters = getMeasurementByName(METERS);
+        final Measurement measurementInSecs = getMeasurementByName(SECONDS);
+
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(DEADLIFTS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(BACK_SQUATS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(FRONT_SQUATS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(BENCH_PRESS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(INCLINE_FRENCH_PRESS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(OVERHEAD_PRESS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(PUSH_PRESS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(BENT_OVER_ROWS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(SNATCH, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(CLEAN_AND_JERK, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(BICEP_CURLS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(SKULL_CRUSHERS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(PULL_UPS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(CHIN_UPS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(MUSCLE_UPS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(PUSH_UPS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(DIPS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(PLANK, measurementInSecs)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(AB_ROLLOUTS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(DUMPBELL_LATERAL_RAISES, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(DUMPBELL_LUNGES, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(DUMPBELL_OVERHEAD_PRESS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(DUMPBELL_CHEST_FLYE, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(DUMPBELL_CHEST_PULLOVER, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(DUMPBELL_FRONT_SQUAT, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(TREADMILL, measurementInMeters)));
     }
 
+    private SQLiteDatabase getDatabase() {
+        if (database == null) {
+            database = getWritableDatabase();
+        }
+        
+        return database;
+    }
 }
