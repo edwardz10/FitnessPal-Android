@@ -7,6 +7,7 @@ import android.util.Log;
 import com.bignerdranch.android.fitnesspal.db.FitnessPalDBHelper;
 import com.bignerdranch.android.fitnesspal.model.Exercise;
 import com.bignerdranch.android.fitnesspal.model.Measurement;
+import com.bignerdranch.android.fitnesspal.model.TrainingSessionType;
 
 import static com.bignerdranch.android.fitnesspal.db.DbConstants.DATABASE_NAME;
 
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
         for (final Exercise exercise : Exercise.getExercises(fitnessPalDBHelper.getReadableDatabase())) {
             Log.i(DATABASE_NAME, exercise.toString());
+        }
+
+        for (final TrainingSessionType trainingSessionType : TrainingSessionType.getTrainingSessionTypes(fitnessPalDBHelper.getReadableDatabase())) {
+            Log.i(DATABASE_NAME, trainingSessionType.toString());
         }
 
     }

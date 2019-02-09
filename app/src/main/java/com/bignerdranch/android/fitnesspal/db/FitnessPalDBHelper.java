@@ -1,53 +1,48 @@
 package com.bignerdranch.android.fitnesspal.db;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.bignerdranch.android.fitnesspal.model.Exercise;
 import com.bignerdranch.android.fitnesspal.model.Measurement;
-
-import java.util.LinkedList;
-import java.util.List;
+import com.bignerdranch.android.fitnesspal.model.TrainingSessionType;
 
 import lombok.Data;
 
 import static com.bignerdranch.android.fitnesspal.db.DbConstants.DATABASE_NAME;
-import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_EXERCISES_TABLE;
-import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_MEASUREMENTS_TABLE;
-import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_REPS_TABLE;
-import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_SETS_TABLE;
-import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_TRAINING_SESSIONS_TABLE;
-import static com.bignerdranch.android.fitnesspal.db.DdlConstants.CREATE_TRAINING_SESSION_TYPES_TABLE;
-import static com.bignerdranch.android.fitnesspal.db.DdlRollbackConstants.DROP_MEASUREMENTS_TABLE;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.AB_ROLLOUTS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_BENCH_PRESS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_BENT_OVER_ROWS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_BICEPS_CURLS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_DEADLIFT;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_FRONT_RAISE;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_LUNGES;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_LYING_PULLOVER;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_MILITARY_PRESS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_SHRUGS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.BARBELL_SQUATS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.CHIN_UPS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.DUMPBELL_ARNOLD_PRESS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.DUMPBELL_BICEPS_CURLS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.DUMPBELL_CHEST_FLYE;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.DUMPBELL_CHEST_PULLOVER;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.DUMPBELL_FRONT_SQUAT;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.DUMPBELL_LATERAL_RAISES;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.DUMPBELL_LUNGES;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.DUMPBELL_OVERHEAD_PRESS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.KILOGRAMS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.METERS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.PLANK;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.PULL_UPS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.SECONDS;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.TIMES;
-import static com.bignerdranch.android.fitnesspal.db.DmlConstants.TREADMILL;
+import static com.bignerdranch.android.fitnesspal.db.ddl.CreateTableConstants.*;
+import static com.bignerdranch.android.fitnesspal.db.ddl.DropTableConstants.DROP_MEASUREMENTS_TABLE;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.AB_ROLLOUTS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BACK_BICEPS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_BENCH_PRESS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_BENT_OVER_ROWS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_BICEPS_CURLS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_DEADLIFT;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_FRONT_RAISE;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_LUNGES;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_LYING_PULLOVER;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_MILITARY_PRESS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_SHRUGS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_SQUATS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.CHEST_TRICEPS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.CHIN_UPS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_ARNOLD_PRESS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_BICEPS_CURLS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_CHEST_FLYE;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_CHEST_PULLOVER;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_FRONT_SQUAT;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_LATERAL_RAISES;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_LUNGES;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_OVERHEAD_PRESS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.KILOGRAMS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.METERS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.PLANK;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.PULL_UPS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.SECONDS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.SHOULDERS_LEGS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.TIMES;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.TREADMILL;
 
 @Data
 public class FitnessPalDBHelper extends SQLiteOpenHelper {
@@ -89,6 +84,7 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
     private void dml() {
         createMeasurements();
         createExercises();
+        createTrainingSessionTypes();
     }
 
     private void createMeasurements() {
@@ -150,6 +146,18 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
                 Exercise.getContentValues(new Exercise(AB_ROLLOUTS, measurementInTimes)));
         getDatabase().insert("exercises", null,
                 Exercise.getContentValues(new Exercise(TREADMILL, measurementInMeters)));
+    }
+
+    private void createTrainingSessionTypes() {
+        getDatabase().insert("training_session_types",
+                null,
+                TrainingSessionType.getContentValues(new TrainingSessionType(CHEST_TRICEPS)));
+        getDatabase().insert("training_session_types",
+                null,
+                TrainingSessionType.getContentValues(new TrainingSessionType(BACK_BICEPS)));
+        getDatabase().insert("training_session_types",
+                null,
+                TrainingSessionType.getContentValues(new TrainingSessionType(SHOULDERS_LEGS)));
     }
 
     private SQLiteDatabase getDatabase() {

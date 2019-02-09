@@ -31,15 +31,19 @@ public class Exercise {
 
     public static List<Exercise> getExercises(final SQLiteDatabase database) {
         final List<Exercise> exercises = new LinkedList<>();
-
         final Cursor cursor = database.rawQuery("select * from exercises", null);
-        cursor.moveToFirst();
 
-        while(cursor.isAfterLast() == false){
-            exercises.add(new Exercise(cursor.getLong(0),
-                    cursor.getString(1),
-                    cursor.getLong(2)));
-            cursor.moveToNext();
+        try {
+            cursor.moveToFirst();
+
+            while (cursor.isAfterLast() == false) {
+                exercises.add(new Exercise(cursor.getLong(0),
+                        cursor.getString(1),
+                        cursor.getLong(2)));
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
         }
 
         return exercises;

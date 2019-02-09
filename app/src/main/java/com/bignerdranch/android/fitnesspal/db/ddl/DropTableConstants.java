@@ -1,6 +1,6 @@
-package com.bignerdranch.android.fitnesspal.db;
+package com.bignerdranch.android.fitnesspal.db.ddl;
 
-public interface DdlRollbackConstants {
+public interface DropTableConstants {
     static final String DROP_TRAINING_SESSIONS_TABLE = "DROP TABLE training_sessions";
 
     static final String DROP_TRAINING_SESSION_TYPES_TABLE = "DROP TABLE training_session_types";

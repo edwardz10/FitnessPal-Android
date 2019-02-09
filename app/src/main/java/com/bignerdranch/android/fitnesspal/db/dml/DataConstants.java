@@ -1,14 +1,14 @@
-package com.bignerdranch.android.fitnesspal.db;
+package com.bignerdranch.android.fitnesspal.db.dml;
 
-import com.bignerdranch.android.fitnesspal.model.Measurement;
+public class DataConstants {
 
-public class DmlConstants {
-
+    // Measurements:
     public static String KILOGRAMS = "kg";
     public static String METERS = "meter";
     public static String SECONDS = "sec";
     public static String TIMES = "times";
 
+    // Exercises:
     public static String BARBELL_SQUATS = "Barbell Squats";
     public static String BARBELL_DEADLIFT = "Barbell Deadlift";
     public static String BARBELL_LUNGES = "Barbell Lunges";
@@ -33,4 +33,8 @@ public class DmlConstants {
     public static String PULL_UPS = "Pull-ups";
     public static String CHIN_UPS = "Chin-ups";
 
+    // Training Session Types:
+    public static final String CHEST_TRICEPS = "Chest & Triceps";
+    public static final String BACK_BICEPS = "Back & Biceps";
+    public static final String SHOULDERS_LEGS = "Shoulders & Legs";
 }

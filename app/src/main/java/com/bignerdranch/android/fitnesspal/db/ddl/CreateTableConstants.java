@@ -1,6 +1,6 @@
-package com.bignerdranch.android.fitnesspal.db;
+package com.bignerdranch.android.fitnesspal.db.ddl;
 
-interface DdlConstants {
+public interface CreateTableConstants {
 
     static final String CREATE_MEASUREMENTS_TABLE =
             "CREATE TABLE measurements(_id integer primary key, name)";
