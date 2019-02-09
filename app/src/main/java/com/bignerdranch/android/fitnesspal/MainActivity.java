@@ -21,11 +21,11 @@ public class MainActivity extends AppCompatActivity {
 
         fitnessPalDBHelper = new FitnessPalDBHelper(this);
 
-        for (final Measurement measurement : fitnessPalDBHelper.getMeasurements()) {
+        for (final Measurement measurement : Measurement.getMeasurements(fitnessPalDBHelper.getReadableDatabase())) {
             Log.i(DATABASE_NAME, measurement.toString());
         }
 
-        for (final Exercise exercise : fitnessPalDBHelper.getExercises()) {
+        for (final Exercise exercise : Exercise.getExercises(fitnessPalDBHelper.getReadableDatabase())) {
             Log.i(DATABASE_NAME, exercise.toString());
         }
 
