@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.bignerdranch.android.fitnesspal.model.Exercise;
 import com.bignerdranch.android.fitnesspal.model.Measurement;
+import com.bignerdranch.android.fitnesspal.model.Set;
 import com.bignerdranch.android.fitnesspal.model.TrainingSessionType;
 
 import lombok.Data;
@@ -15,9 +16,10 @@ import static com.bignerdranch.android.fitnesspal.db.ddl.CreateTableConstants.*;
 import static com.bignerdranch.android.fitnesspal.db.ddl.DropTableConstants.DROP_MEASUREMENTS_TABLE;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.AB_ROLLOUTS;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BACK_BICEPS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BACK_EXTENSION;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_BENCH_PRESS;
-import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_BENT_OVER_ROWS;
-import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_BICEPS_CURLS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_BENT_OVER_ROW;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_BICEPS_CURL;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_DEADLIFT;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_FRONT_RAISE;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_LUNGES;
@@ -28,14 +30,17 @@ import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BARBELL_S
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.CHEST_TRICEPS;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.CHIN_UPS;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_ARNOLD_PRESS;
-import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_BICEPS_CURLS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_BICEPS_CURL;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_CHEST_FLYE;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_CHEST_PULLOVER;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_FRONT_SQUAT;
-import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_LATERAL_RAISES;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_LATERAL_RAISE;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_LUNGES;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_ONE_ARM_ROW;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.DUMPBELL_OVERHEAD_PRESS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.HORIZONTAL_ROW;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.KILOGRAMS;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.LEG_PRESS;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.METERS;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.PLANK;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.PULL_UPS;
@@ -85,6 +90,7 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         createMeasurements();
         createExercises();
         createTrainingSessionTypes();
+        createSets();
     }
 
     private void createMeasurements() {
@@ -111,7 +117,7 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         getDatabase().insert("exercises", null,
                 Exercise.getContentValues(new Exercise(BARBELL_LYING_PULLOVER, measurementInKg)));
         getDatabase().insert("exercises", null,
-                Exercise.getContentValues(new Exercise(BARBELL_BENT_OVER_ROWS, measurementInKg)));
+                Exercise.getContentValues(new Exercise(BARBELL_BENT_OVER_ROW, measurementInKg)));
         getDatabase().insert("exercises", null,
                 Exercise.getContentValues(new Exercise(BARBELL_MILITARY_PRESS, measurementInKg)));
         getDatabase().insert("exercises", null,
@@ -119,9 +125,9 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         getDatabase().insert("exercises", null,
                 Exercise.getContentValues(new Exercise(BARBELL_SHRUGS, measurementInKg)));
         getDatabase().insert("exercises", null,
-                Exercise.getContentValues(new Exercise(BARBELL_BICEPS_CURLS, measurementInKg)));
+                Exercise.getContentValues(new Exercise(BARBELL_BICEPS_CURL, measurementInKg)));
         getDatabase().insert("exercises", null,
-                Exercise.getContentValues(new Exercise(DUMPBELL_LATERAL_RAISES, measurementInKg)));
+                Exercise.getContentValues(new Exercise(DUMPBELL_LATERAL_RAISE, measurementInKg)));
         getDatabase().insert("exercises", null,
                 Exercise.getContentValues(new Exercise(DUMPBELL_LUNGES, measurementInKg)));
         getDatabase().insert("exercises", null,
@@ -135,7 +141,15 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         getDatabase().insert("exercises", null,
                 Exercise.getContentValues(new Exercise(DUMPBELL_ARNOLD_PRESS, measurementInKg)));
         getDatabase().insert("exercises", null,
-                Exercise.getContentValues(new Exercise(DUMPBELL_BICEPS_CURLS, measurementInKg)));
+                Exercise.getContentValues(new Exercise(DUMPBELL_BICEPS_CURL, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(DUMPBELL_ONE_ARM_ROW, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(BACK_EXTENSION, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(LEG_PRESS, measurementInKg)));
+        getDatabase().insert("exercises", null,
+                Exercise.getContentValues(new Exercise(HORIZONTAL_ROW, measurementInKg)));
         getDatabase().insert("exercises", null,
                 Exercise.getContentValues(new Exercise(PULL_UPS, measurementInTimes)));
         getDatabase().insert("exercises", null,
@@ -158,6 +172,31 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         getDatabase().insert("training_session_types",
                 null,
                 TrainingSessionType.getContentValues(new TrainingSessionType(SHOULDERS_LEGS)));
+    }
+
+    private void createSets() {
+        final TrainingSessionType chestTrainingSessionType =
+                TrainingSessionType.getTrainingSessionTypeByName(getDatabase(), BACK_BICEPS);
+
+        final Exercise treadMill = Exercise.getExerciseByName(getDatabase(), TREADMILL);
+        final Exercise pullUps = Exercise.getExerciseByName(getDatabase(), PULL_UPS);
+        final Exercise dumpbellOneArm = Exercise.getExerciseByName(getDatabase(), DUMPBELL_ONE_ARM_ROW);
+        final Exercise horizontalRow = Exercise.getExerciseByName(getDatabase(), HORIZONTAL_ROW);
+        final Exercise backExtension = Exercise.getExerciseByName(getDatabase(), BACK_EXTENSION);
+        final Exercise barbellBicepsCurl = Exercise.getExerciseByName(getDatabase(), BARBELL_BICEPS_CURL);
+        final Exercise dumpBellBicepsCurl = Exercise.getExerciseByName(getDatabase(), DUMPBELL_BICEPS_CURL);
+        final Exercise legPress = Exercise.getExerciseByName(getDatabase(), LEG_PRESS);
+        final Exercise plank = Exercise.getExerciseByName(getDatabase(), PLANK);
+
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(1, chestTrainingSessionType, treadMill)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, pullUps)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, dumpbellOneArm)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, horizontalRow)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, backExtension)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, barbellBicepsCurl)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, dumpBellBicepsCurl)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, legPress)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(1, chestTrainingSessionType, plank)));
     }
 
     private SQLiteDatabase getDatabase() {

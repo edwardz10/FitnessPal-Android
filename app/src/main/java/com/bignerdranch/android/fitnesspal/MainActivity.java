@@ -7,9 +7,11 @@ import android.util.Log;
 import com.bignerdranch.android.fitnesspal.db.FitnessPalDBHelper;
 import com.bignerdranch.android.fitnesspal.model.Exercise;
 import com.bignerdranch.android.fitnesspal.model.Measurement;
+import com.bignerdranch.android.fitnesspal.model.Set;
 import com.bignerdranch.android.fitnesspal.model.TrainingSessionType;
 
 import static com.bignerdranch.android.fitnesspal.db.DbConstants.DATABASE_NAME;
+import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BACK_BICEPS;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,5 +36,11 @@ public class MainActivity extends AppCompatActivity {
             Log.i(DATABASE_NAME, trainingSessionType.toString());
         }
 
+        final TrainingSessionType backBicepsSessionType =
+                TrainingSessionType.getTrainingSessionTypeByName(fitnessPalDBHelper.getReadableDatabase(), BACK_BICEPS);
+
+        for (final Set set : Set.getSetsByTrainingSessionType(fitnessPalDBHelper.getReadableDatabase(), backBicepsSessionType)) {
+            Log.i(DATABASE_NAME, set.toString());
+        }
     }
 }

@@ -36,7 +36,7 @@ public class Exercise {
         try {
             cursor.moveToFirst();
 
-            while (cursor.isAfterLast() == false) {
+            while (!cursor.isAfterLast()) {
                 exercises.add(new Exercise(cursor.getLong(0),
                         cursor.getString(1),
                         cursor.getLong(2)));
@@ -47,6 +47,25 @@ public class Exercise {
         }
 
         return exercises;
+    }
+
+    public static Exercise getExerciseByName(final SQLiteDatabase database, final String name) {
+        Exercise exercise = null;
+        final String query = "select * from exercises where name = '" + name + "';";
+        final Cursor cursor = database.rawQuery(query, null);
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                exercise = new Exercise(cursor.getLong(0),
+                                        cursor.getString(1),
+                                        cursor.getLong(2));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return exercise;
     }
 
 }
