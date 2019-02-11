@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.bignerdranch.android.fitnesspal.model.Exercise;
 import com.bignerdranch.android.fitnesspal.model.Measurement;
 import com.bignerdranch.android.fitnesspal.model.Set;
+import com.bignerdranch.android.fitnesspal.model.TrainingSession;
 import com.bignerdranch.android.fitnesspal.model.TrainingSessionType;
+import com.bignerdranch.android.fitnesspal.util.Utils;
 
 import lombok.Data;
 
@@ -91,6 +93,7 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         createExercises();
         createTrainingSessionTypes();
         createSets();
+        createTrainingSessions();
     }
 
     private void createMeasurements() {
@@ -198,6 +201,24 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, legPress)));
         getDatabase().insert("sets", null, Set.getContentValues(new Set(1, chestTrainingSessionType, plank)));
     }
+
+    private void createTrainingSessions() {
+        final TrainingSessionType chestTrainingSessionType =
+                TrainingSessionType.getTrainingSessionTypeByName(getDatabase(), BACK_BICEPS);
+
+        getDatabase().insert("training_sessions",
+                null,
+                TrainingSession.getContentValues(new TrainingSession(Utils.dateToMillis("21.09.2018"), chestTrainingSessionType)));
+
+        getDatabase().insert("training_sessions",
+                null,
+                TrainingSession.getContentValues(new TrainingSession(Utils.dateToMillis("28.09.2018"), chestTrainingSessionType)));
+
+        getDatabase().insert("training_sessions",
+                null,
+                TrainingSession.getContentValues(new TrainingSession(Utils.dateToMillis("05.10.2018"), chestTrainingSessionType)));
+    }
+
 
     private SQLiteDatabase getDatabase() {
         if (database == null) {

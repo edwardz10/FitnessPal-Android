@@ -25,8 +25,10 @@ public interface CreateTableConstants {
                     + "training_session_type_id integer references training_session_types(_id))";
 
     static final String CREATE_REPS_TABLE =
-            "CREATE TABLE reps(_id integer primary key , "
-                    + "count integer,"
-                    + "set_id integer references sets(_id))";
+            "CREATE TABLE reps(_id integer primary key, "
+                    + "times integer, "
+                    + "measurement_number real, "
+                    + "set_id integer references sets(_id), "
+                    + "training_session_id integer references training_sessions(_id))";
 
 }
