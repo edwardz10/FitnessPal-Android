@@ -68,4 +68,23 @@ public class Exercise {
         return exercise;
     }
 
+    public static Exercise getExerciseById(final SQLiteDatabase database, final Long id) {
+        Exercise exercise = null;
+        final String query = "select * from exercises where _id = '" + id + "';";
+        final Cursor cursor = database.rawQuery(query, null);
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                exercise = new Exercise(cursor.getLong(0),
+                        cursor.getString(1),
+                        cursor.getLong(2));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return exercise;
+    }
+
 }

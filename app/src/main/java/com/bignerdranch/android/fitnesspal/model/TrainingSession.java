@@ -8,9 +8,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+import static com.bignerdranch.android.fitnesspal.util.Utils.millisToDate;
+
+@Getter
 @AllArgsConstructor
 public class TrainingSession {
     private Long id;
@@ -62,4 +64,37 @@ public class TrainingSession {
         return trainingSessions;
     }
 
+    public static TrainingSession getTrainingSessionsByDate(final SQLiteDatabase database,
+                                                                  final Long date) {
+        TrainingSession trainingSession = null;
+        final Cursor cursor = database.rawQuery(
+                "select * from training_sessions where date=" + date,
+                null);
+
+        try {
+            cursor.moveToFirst();
+
+            final Integer idColumn = cursor.getColumnIndex("_id");
+            final Integer dateColumn = cursor.getColumnIndex("date");
+            final Integer trainingSessionTypeIdColumn = cursor.getColumnIndex("training_session_type_id");
+
+            if (!cursor.isAfterLast()) {
+                trainingSession = new TrainingSession(
+                        cursor.getLong(idColumn),
+                        cursor.getLong(dateColumn),
+                        cursor.getLong(trainingSessionTypeIdColumn));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return trainingSession;
+    }
+
+    @Override
+    public String toString() {
+        return "id=" + id
+                + ", date=" + millisToDate(date)
+                + ", trainingSessionTypeId=" + trainingSessionTypeId;
+    }
 }

@@ -3,6 +3,7 @@ package com.bignerdranch.android.fitnesspal.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.bignerdranch.android.fitnesspal.model.Exercise;
 import com.bignerdranch.android.fitnesspal.model.Measurement;
@@ -10,6 +11,8 @@ import com.bignerdranch.android.fitnesspal.model.Set;
 import com.bignerdranch.android.fitnesspal.model.TrainingSession;
 import com.bignerdranch.android.fitnesspal.model.TrainingSessionType;
 import com.bignerdranch.android.fitnesspal.util.Utils;
+
+import java.util.List;
 
 import lombok.Data;
 
@@ -94,6 +97,7 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         createTrainingSessionTypes();
         createSets();
         createTrainingSessions();
+        createReps();
     }
 
     private void createMeasurements() {
@@ -178,7 +182,7 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
     }
 
     private void createSets() {
-        final TrainingSessionType chestTrainingSessionType =
+        final TrainingSessionType backTrainingSessionType =
                 TrainingSessionType.getTrainingSessionTypeByName(getDatabase(), BACK_BICEPS);
 
         final Exercise treadMill = Exercise.getExerciseByName(getDatabase(), TREADMILL);
@@ -191,15 +195,15 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
         final Exercise legPress = Exercise.getExerciseByName(getDatabase(), LEG_PRESS);
         final Exercise plank = Exercise.getExerciseByName(getDatabase(), PLANK);
 
-        getDatabase().insert("sets", null, Set.getContentValues(new Set(1, chestTrainingSessionType, treadMill)));
-        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, pullUps)));
-        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, dumpbellOneArm)));
-        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, horizontalRow)));
-        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, backExtension)));
-        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, barbellBicepsCurl)));
-        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, dumpBellBicepsCurl)));
-        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, chestTrainingSessionType, legPress)));
-        getDatabase().insert("sets", null, Set.getContentValues(new Set(1, chestTrainingSessionType, plank)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(1, backTrainingSessionType, treadMill)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, backTrainingSessionType, pullUps)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, backTrainingSessionType, dumpbellOneArm)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, backTrainingSessionType, horizontalRow)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, backTrainingSessionType, backExtension)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, backTrainingSessionType, barbellBicepsCurl)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, backTrainingSessionType, dumpBellBicepsCurl)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(3, backTrainingSessionType, legPress)));
+        getDatabase().insert("sets", null, Set.getContentValues(new Set(1, backTrainingSessionType, plank)));
     }
 
     private void createTrainingSessions() {
@@ -219,6 +223,20 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
                 TrainingSession.getContentValues(new TrainingSession(Utils.dateToMillis("05.10.2018"), chestTrainingSessionType)));
     }
 
+    private void createReps() {
+        final TrainingSessionType backTrainingSessionType =
+                TrainingSessionType.getTrainingSessionTypeByName(getDatabase(), BACK_BICEPS);
+        final TrainingSession trainingSession =
+                TrainingSession.getTrainingSessionsByTrainingSessionType(getDatabase(), backTrainingSessionType).get(0);
+
+        final List<Set> sets = Set.getSetsByTrainingSessionType(getDatabase(), backTrainingSessionType);
+
+        for (final Set set : sets) {
+            Log.i(DATABASE_NAME,
+                    "Set for training session of type " + backTrainingSessionType.getName()
+                            + ": " + Exercise.getExerciseById(getDatabase(), set.getExerciseId()));
+        }
+    }
 
     private SQLiteDatabase getDatabase() {
         if (database == null) {
