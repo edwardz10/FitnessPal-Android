@@ -91,6 +91,23 @@ public class TrainingSession {
         return trainingSession;
     }
 
+    public static TrainingSession pickSetByTrainingSessionTypeName(final SQLiteDatabase database,
+                                                                   final List<TrainingSession> trainingSessions,
+                                                                   final String trainingSessionTypeName) {
+        TrainingSession result = null;
+        final TrainingSessionType trainingSessionType
+                = TrainingSessionType.getTrainingSessionTypeByName(database, trainingSessionTypeName);
+
+        for (final TrainingSession trainingSession : trainingSessions) {
+            if (trainingSession.trainingSessionTypeId.equals(trainingSessionType.getId())) {
+                result = trainingSession;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     @Override
     public String toString() {
         return "id=" + id

@@ -69,4 +69,19 @@ public class Set {
         return sets;
     }
 
+    public static Set pickSetByExerciseName(final SQLiteDatabase database,
+                                            final List<Set> sets,
+                                            final String exerciseName) {
+        Set result = null;
+        final Exercise exercise = Exercise.getExerciseByName(database, exerciseName);
+
+        for (final Set set : sets) {
+            if (set.exerciseId.equals(exercise.getId())) {
+                result = set;
+                break;
+            }
+        }
+
+        return result;
+    }
 }

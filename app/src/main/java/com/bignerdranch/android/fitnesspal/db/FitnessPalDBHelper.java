@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.bignerdranch.android.fitnesspal.model.Exercise;
 import com.bignerdranch.android.fitnesspal.model.Measurement;
+import com.bignerdranch.android.fitnesspal.model.Rep;
 import com.bignerdranch.android.fitnesspal.model.Set;
 import com.bignerdranch.android.fitnesspal.model.TrainingSession;
 import com.bignerdranch.android.fitnesspal.model.TrainingSessionType;
@@ -231,11 +232,46 @@ public class FitnessPalDBHelper extends SQLiteOpenHelper {
 
         final List<Set> sets = Set.getSetsByTrainingSessionType(getDatabase(), backTrainingSessionType);
 
-        for (final Set set : sets) {
-            Log.i(DATABASE_NAME,
-                    "Set for training session of type " + backTrainingSessionType.getName()
-                            + ": " + Exercise.getExerciseById(getDatabase(), set.getExerciseId()));
-        }
+        final Set treadmillSet = Set.pickSetByExerciseName(getDatabase(), sets, TREADMILL);
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(1, 1000.0f, treadmillSet, trainingSession)));
+
+        final Set pullUpSet = Set.pickSetByExerciseName(getDatabase(), sets, PULL_UPS);
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(6, 1.0f, pullUpSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(4, 1.0f, pullUpSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(4, 1.0f, pullUpSet, trainingSession)));
+
+        final Set dumpbellOneArmSet = Set.pickSetByExerciseName(getDatabase(), sets, DUMPBELL_ONE_ARM_ROW);
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(10, 20.0f, dumpbellOneArmSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(10, 20.0f, dumpbellOneArmSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(8, 22.5f, dumpbellOneArmSet, trainingSession)));
+
+        final Set horizontalRowSet = Set.pickSetByExerciseName(getDatabase(), sets, HORIZONTAL_ROW);
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(10, 5.0f, horizontalRowSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(10, 5.0f, horizontalRowSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(9, 5.0f, horizontalRowSet, trainingSession)));
+
+        final Set backExtensionSet = Set.pickSetByExerciseName(getDatabase(), sets, BACK_EXTENSION);
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(10, 15.0f, backExtensionSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(10, 15.0f, backExtensionSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(10, 15.0f, backExtensionSet, trainingSession)));
+
+        final Set dumpbellBicepsCurlSet = Set.pickSetByExerciseName(getDatabase(), sets, DUMPBELL_BICEPS_CURL);
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(10, 10.0f, dumpbellBicepsCurlSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(8, 10.0f, dumpbellBicepsCurlSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(8, 10.0f, dumpbellBicepsCurlSet, trainingSession)));
+
+        final Set barbellBicepsCurlSet = Set.pickSetByExerciseName(getDatabase(), sets, DUMPBELL_BICEPS_CURL);
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(6, 20.0f, barbellBicepsCurlSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(8, 20.0f, barbellBicepsCurlSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(6, 20.0f, barbellBicepsCurlSet, trainingSession)));
+
+        final Set legPressSet = Set.pickSetByExerciseName(getDatabase(), sets, LEG_PRESS);
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(10, 50.0f, legPressSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(8, 100.0f, legPressSet, trainingSession)));
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(6, 150.0f, legPressSet, trainingSession)));
+
+        final Set plankSet = Set.pickSetByExerciseName(getDatabase(), sets, PLANK);
+        getDatabase().insert("reps", null, Rep.getContentValues(new Rep(1, 60.0f, legPressSet, trainingSession)));
     }
 
     private SQLiteDatabase getDatabase() {

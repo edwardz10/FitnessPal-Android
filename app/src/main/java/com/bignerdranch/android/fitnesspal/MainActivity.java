@@ -7,9 +7,12 @@ import android.util.Log;
 import com.bignerdranch.android.fitnesspal.db.FitnessPalDBHelper;
 import com.bignerdranch.android.fitnesspal.model.Exercise;
 import com.bignerdranch.android.fitnesspal.model.Measurement;
+import com.bignerdranch.android.fitnesspal.model.Rep;
 import com.bignerdranch.android.fitnesspal.model.Set;
 import com.bignerdranch.android.fitnesspal.model.TrainingSession;
 import com.bignerdranch.android.fitnesspal.model.TrainingSessionType;
+
+import java.util.List;
 
 import static com.bignerdranch.android.fitnesspal.db.DbConstants.DATABASE_NAME;
 import static com.bignerdranch.android.fitnesspal.db.dml.DataConstants.BACK_BICEPS;
@@ -44,10 +47,19 @@ public class MainActivity extends AppCompatActivity {
             Log.i(DATABASE_NAME, set.toString());
         }
 
-        for (final TrainingSession trainingSession : TrainingSession.getTrainingSessionsByTrainingSessionType(
-                fitnessPalDBHelper.getReadableDatabase(), backBicepsSessionType)) {
+        final List<TrainingSession> traningSessions = TrainingSession.getTrainingSessionsByTrainingSessionType(
+                fitnessPalDBHelper.getReadableDatabase(), backBicepsSessionType);
+
+        for (final TrainingSession trainingSession : traningSessions) {
             Log.i(DATABASE_NAME, trainingSession.toString());
         }
 
+        final TrainingSession trainingSession = TrainingSession.pickSetByTrainingSessionTypeName(
+                fitnessPalDBHelper.getReadableDatabase(), traningSessions, BACK_BICEPS);
+
+        final List<Rep> reps = Rep.getRepsByTrainingSession(fitnessPalDBHelper.getReadableDatabase(), trainingSession);
+        for (final Rep rep : reps) {
+            Log.i(DATABASE_NAME, rep.toString());
+        }
     }
 }
