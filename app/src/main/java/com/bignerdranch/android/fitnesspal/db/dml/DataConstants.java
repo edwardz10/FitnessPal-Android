@@ -33,7 +33,7 @@ public class DataConstants {
     public static String PLANK = "Plank";
     public static String TREADMILL = "Treadmill";
     public static String AB_ROLLOUTS = "Ab Rollouts";
-    public static String PULL_UPS = "Pull-ups";
+        public static String PULL_UPS = "Pull-ups";
     public static String CHIN_UPS = "Chin-ups";
     public static String LEG_PRESS = "Leg Press";
 
